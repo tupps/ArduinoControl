@@ -10,4 +10,8 @@
 
 @interface LTViewController : UIViewController
 
+- (IBAction) lightOneChanged:(id)sender; 
+- (IBAction) lightTwoChanged:(id)sender;
+- (IBAction) lightThreeChanged:(id)sender;
+
 @end

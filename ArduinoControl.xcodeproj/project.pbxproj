@@ -18,6 +18,8 @@
 		0BBF952917880785009E0AD0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0BBF952817880785009E0AD0 /* Default-568h@2x.png */; };
 		0BBF952C17880785009E0AD0 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0BBF952A17880785009E0AD0 /* MainStoryboard.storyboard */; };
 		0BBF952F17880785009E0AD0 /* LTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BBF952E17880785009E0AD0 /* LTViewController.m */; };
+		0BBF953917880AA2009E0AD0 /* BLE.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BBF953717880AA2009E0AD0 /* BLE.m */; };
+		0BBF953B17880C67009E0AD0 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BBF953A17880C67009E0AD0 /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,10 @@
 		0BBF952B17880785009E0AD0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		0BBF952D17880785009E0AD0 /* LTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LTViewController.h; sourceTree = "<group>"; };
 		0BBF952E17880785009E0AD0 /* LTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LTViewController.m; sourceTree = "<group>"; };
+		0BBF953617880AA2009E0AD0 /* BLE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLE.h; sourceTree = "<group>"; };
+		0BBF953717880AA2009E0AD0 /* BLE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLE.m; sourceTree = "<group>"; };
+		0BBF953817880AA2009E0AD0 /* BLEDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLEDefines.h; sourceTree = "<group>"; };
+		0BBF953A17880C67009E0AD0 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BBF953B17880C67009E0AD0 /* CoreBluetooth.framework in Frameworks */,
 				0BBF951317880785009E0AD0 /* UIKit.framework in Frameworks */,
 				0BBF951517880785009E0AD0 /* Foundation.framework in Frameworks */,
 				0BBF951717880785009E0AD0 /* CoreGraphics.framework in Frameworks */,
@@ -56,6 +63,7 @@
 		0BBF950617880785009E0AD0 = {
 			isa = PBXGroup;
 			children = (
+				0BBF953A17880C67009E0AD0 /* CoreBluetooth.framework */,
 				0BBF951817880785009E0AD0 /* ArduinoControl */,
 				0BBF951117880785009E0AD0 /* Frameworks */,
 				0BBF951017880785009E0AD0 /* Products */,
@@ -73,6 +81,7 @@
 		0BBF951117880785009E0AD0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0BBF953517880AA2009E0AD0 /* BLE_Framework */,
 				0BBF951217880785009E0AD0 /* UIKit.framework */,
 				0BBF951417880785009E0AD0 /* Foundation.framework */,
 				0BBF951617880785009E0AD0 /* CoreGraphics.framework */,
@@ -105,6 +114,17 @@
 				0BBF952817880785009E0AD0 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0BBF953517880AA2009E0AD0 /* BLE_Framework */ = {
+			isa = PBXGroup;
+			children = (
+				0BBF953617880AA2009E0AD0 /* BLE.h */,
+				0BBF953717880AA2009E0AD0 /* BLE.m */,
+				0BBF953817880AA2009E0AD0 /* BLEDefines.h */,
+			);
+			name = BLE_Framework;
+			path = ArduinoControl/BLE_Framework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +197,7 @@
 				0BBF951F17880785009E0AD0 /* main.m in Sources */,
 				0BBF952317880785009E0AD0 /* LTAppDelegate.m in Sources */,
 				0BBF952F17880785009E0AD0 /* LTViewController.m in Sources */,
+				0BBF953917880AA2009E0AD0 /* BLE.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

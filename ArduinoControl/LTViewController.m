@@ -7,8 +7,11 @@
 //
 
 #import "LTViewController.h"
+#import "BLE.h"
 
-@interface LTViewController ()
+@interface LTViewController () <BLEDelegate>
+
+@property (nonatomic, strong) BLE *ble; 
 
 @end
 
@@ -17,13 +20,92 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+
+    self.ble = [[BLE alloc] init];
+    [self.ble controlSetup:1]; //Note the number doesn't seem to do anything!
+    self.ble.delegate = self;
+
+    [self tryToConnectToBLESheild];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void) tryToConnectToBLESheild {
+    //Check core bluetooth state
+    if (self.ble.CM.state != CBCentralManagerStatePoweredOn)
+        [self waitAndTryConnectingToBLE]; 
+    
+    //Check if any periphrals
+    if (self.ble.peripherals.count == 0)
+        [self.ble findBLEPeripherals:2.0];
+    else
+        if (! self.ble.activePeripheral)
+            [self.ble connectPeripheral:[self.ble.peripherals objectAtIndex:0]];
+
+    [self waitAndTryConnectingToBLE];
 }
+
+
+- (void) waitAndTryConnectingToBLE {
+    if (self.ble.CM.state != CBCentralManagerStatePoweredOn)
+        [self performSelector:@selector(tryToConnectToBLESheild) withObject:nil afterDelay:0.25];
+    else
+        [self performSelector:@selector(tryToConnectToBLESheild) withObject:nil afterDelay:2.0];
+}
+
+- (IBAction) lightOneChanged:(UISwitch *)sender {
+    //Turn on light one
+    UInt8 buf[2] = {0x01, 0x00};
+
+    if (sender.on)
+        buf[1] = 0x01;
+    else
+        buf[1] = 0x00;
+
+    NSData *data = [[NSData alloc] initWithBytes:buf length:2];
+    [self.ble write:data];
+}
+
+- (IBAction) lightTwoChanged:(UISwitch *)sender {
+    //Turn on light one
+    UInt8 buf[2] = {0x02, 0x00};
+
+    if (sender.on)
+        buf[1] = 0x01;
+    else
+        buf[1] = 0x00;
+
+    NSData *data = [[NSData alloc] initWithBytes:buf length:2];
+    [self.ble write:data];
+}
+
+- (IBAction) lightThreeChanged:(UISwitch *)sender {
+    //Turn on light one
+    UInt8 buf[2] = {0x03, 0x00};
+
+    if (sender.on)
+        buf[1] = 0x01;
+    else
+        buf[1] = 0x00;
+
+    NSData *data = [[NSData alloc] initWithBytes:buf length:2];
+    [self.ble write:data];
+}
+
+-(void) bleDidConnect {
+    NSLog(@"Did Connect");
+}
+
+-(void) bleDidDisconnect {
+    NSLog(@"Did Disconnect");
+}
+
+-(void) bleDidUpdateRSSI:(NSNumber *) rssi {
+    NSLog(@"Did RSSI: %@", rssi);
+}
+
+-(void) bleDidReceiveData:(unsigned char *) data length:(int) length {
+    NSLog(@"Did Receive Data");
+
+}
+
 
 @end

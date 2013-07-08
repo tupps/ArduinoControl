@@ -45,9 +45,9 @@
 
 - (void) waitAndTryConnectingToBLE {
     if (self.ble.CM.state != CBCentralManagerStatePoweredOn)
-        [self performSelector:@selector(tryToConnectToBLESheild) withObject:nil afterDelay:0.25];
+        [self performSelector:@selector(tryToConnectToBLEShield) withObject:nil afterDelay:0.25];
     else
-        [self performSelector:@selector(tryToConnectToBLESheild) withObject:nil afterDelay:2.0];
+        [self performSelector:@selector(tryToConnectToBLEShield) withObject:nil afterDelay:2.0];
 }
 
 - (IBAction) lightOneChanged:(UISwitch *)sender {

@@ -17,18 +17,17 @@
 
 @implementation LTViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     self.ble = [[BLE alloc] init];
     [self.ble controlSetup:1]; //Note the number doesn't seem to do anything!
     self.ble.delegate = self;
 
-    [self tryToConnectToBLESheild];
+    [self tryToConnectToBLEShield];
 }
 
-- (void) tryToConnectToBLESheild {
+- (void) tryToConnectToBLEShield {
     //Check core bluetooth state
     if (self.ble.CM.state != CBCentralManagerStatePoweredOn)
         [self waitAndTryConnectingToBLE]; 
@@ -104,7 +103,6 @@
 
 -(void) bleDidReceiveData:(unsigned char *) data length:(int) length {
     NSLog(@"Did Receive Data");
-
 }
 
 

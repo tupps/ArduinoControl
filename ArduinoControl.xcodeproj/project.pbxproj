@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B3EFBF9179016D40029EDB4 /* LTRedBearLabsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B3EFBF8179016D40029EDB4 /* LTRedBearLabsController.m */; };
 		0BBF951317880785009E0AD0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BBF951217880785009E0AD0 /* UIKit.framework */; };
 		0BBF951517880785009E0AD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BBF951417880785009E0AD0 /* Foundation.framework */; };
 		0BBF951717880785009E0AD0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BBF951617880785009E0AD0 /* CoreGraphics.framework */; };
@@ -23,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0B3EFBF7179016D40029EDB4 /* LTRedBearLabsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LTRedBearLabsController.h; sourceTree = "<group>"; };
+		0B3EFBF8179016D40029EDB4 /* LTRedBearLabsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LTRedBearLabsController.m; sourceTree = "<group>"; };
 		0BBF950F17880785009E0AD0 /* ArduinoControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArduinoControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BBF951217880785009E0AD0 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0BBF951417880785009E0AD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -94,9 +97,11 @@
 			children = (
 				0BBF952117880785009E0AD0 /* LTAppDelegate.h */,
 				0BBF952217880785009E0AD0 /* LTAppDelegate.m */,
-				0BBF952A17880785009E0AD0 /* MainStoryboard.storyboard */,
+				0B3EFBF7179016D40029EDB4 /* LTRedBearLabsController.h */,
+				0B3EFBF8179016D40029EDB4 /* LTRedBearLabsController.m */,
 				0BBF952D17880785009E0AD0 /* LTViewController.h */,
 				0BBF952E17880785009E0AD0 /* LTViewController.m */,
+				0BBF952A17880785009E0AD0 /* MainStoryboard.storyboard */,
 				0BBF951917880785009E0AD0 /* Supporting Files */,
 			);
 			path = ArduinoControl;
@@ -198,6 +203,7 @@
 				0BBF952317880785009E0AD0 /* LTAppDelegate.m in Sources */,
 				0BBF952F17880785009E0AD0 /* LTViewController.m in Sources */,
 				0BBF953917880AA2009E0AD0 /* BLE.m in Sources */,
+				0B3EFBF9179016D40029EDB4 /* LTRedBearLabsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -320,6 +326,7 @@
 				0BBF953417880785009E0AD0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

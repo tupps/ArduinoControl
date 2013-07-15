@@ -9,9 +9,7 @@
 #import "LTViewController.h"
 #import "LTRedBearLabsController.h"
 
-@interface LTViewController () //<BLEDelegate>
-
-//@property (nonatomic, strong) BLE *ble;
+@interface LTViewController ()
 
 @end
 
@@ -34,22 +32,5 @@
 - (IBAction) lightThreeChanged:(UISwitch *)sender {
     [[LTRedBearLabsController sharedLTRedBearLabsController] turnLight:3 on:sender.on];
 }
-
--(void) bleDidConnect {
-    NSLog(@"Did Connect");
-}
-
--(void) bleDidDisconnect {
-    NSLog(@"Did Disconnect");
-}
-
--(void) bleDidUpdateRSSI:(NSNumber *) rssi {
-    NSLog(@"Did RSSI: %@", rssi);
-}
-
--(void) bleDidReceiveData:(unsigned char *) data length:(int) length {
-    NSLog(@"Did Receive Data");
-}
-
 
 @end

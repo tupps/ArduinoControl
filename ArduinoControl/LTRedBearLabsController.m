@@ -44,9 +44,8 @@
 }
 
 - (void) startLookingForConnection {
+    
     if (self.centralManager.state == CBCentralManagerStatePoweredOn) {
-
-
         [self.centralManager scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:BLE_DEVICE_SERVICE_UUID]] options:nil];
         self.bluetoothStatus = @"Scanning for peripherals";
     } else {
@@ -104,7 +103,6 @@
 #pragma mark - CBCentralManagerDelegate Methods 
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    NSLog(@"Update state");
     if (central.state == CBCentralManagerStatePoweredOn) {
         self.bluetoothStatus = @"Bluetooth powered on";
         if (self.lookForConnection)
@@ -128,23 +126,18 @@
 }
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSLog(@"Did connect");
     self.activePeripheral = peripheral;
     [self.activePeripheral discoverServices:nil];
 }
 
 #pragma mark - CBPeripheralDelegate Methods
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
-{
-    if (!error) {
-        for (CBService *service in peripheral.services) {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
+    if (!error)
+        for (CBService *service in peripheral.services)
             [peripheral discoverCharacteristics:nil forService:service];
-        }
-
-    } else {
+    else
         NSLog(@"Service discovery was unsuccessful!\n");
-    }
 }
 
 @end

@@ -49,14 +49,14 @@
                             <constraint firstItem="18R-cE-ZGY" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="158" id="9Xf-FO-Rw1"/>
                             <constraint firstItem="T2J-kE-05U" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="N6R-4h-GNW"/>
                             <constraint firstItem="rtY-SE-SJT" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Pc4-rO-U2w"/>
+                            <constraint firstItem="Tpa-u7-TXy" firstAttribute="top" secondItem="3" secondAttribute="top" constant="187" id="SVP-IQ-q5r"/>
                             <constraint firstItem="ac1-nB-3ug" firstAttribute="bottom" secondItem="fZ5-34-EAl" secondAttribute="bottom" type="default" id="Y0c-Ap-7PV"/>
-                            <constraint firstItem="Tpa-u7-TXy" firstAttribute="top" secondItem="ac1-nB-3ug" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="ZDZ-Bw-8C7"/>
                             <constraint firstItem="18R-cE-ZGY" firstAttribute="bottom" secondItem="rtY-SE-SJT" secondAttribute="bottom" type="default" id="Zkh-cJ-AMI"/>
+                            <constraint firstItem="ac1-nB-3ug" firstAttribute="top" secondItem="3" secondAttribute="top" constant="142" id="ciM-FF-SdZ"/>
                             <constraint firstItem="ac1-nB-3ug" firstAttribute="leading" secondItem="18R-cE-ZGY" secondAttribute="leading" type="default" id="hCv-dw-hGv"/>
                             <constraint firstItem="18R-cE-ZGY" firstAttribute="top" secondItem="3" secondAttribute="top" constant="96" id="nac-am-3GX"/>
                             <constraint firstItem="fZ5-34-EAl" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="sqW-VI-w54"/>
                             <constraint firstItem="Tpa-u7-TXy" firstAttribute="leading" secondItem="ac1-nB-3ug" secondAttribute="leading" type="default" id="wOY-ng-UvN"/>
-                            <constraint firstItem="ac1-nB-3ug" firstAttribute="top" secondItem="18R-cE-ZGY" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="yhe-g4-SAh"/>
                         </constraints>
                     </view>
                 </viewController>

@@ -33,4 +33,9 @@
     [[LTRedBearLabsController sharedLTRedBearLabsController] turnLight:3 on:sender.on];
 }
 
+-(void) bleDidUpdateRSSI:(NSNumber *) rssi {
+    NSLog(@"Did RSSI: %@", rssi);
+}
+
+
 @end

@@ -140,4 +140,59 @@
         NSLog(@"Service discovery was unsuccessful!\n");
 }
 
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    unsigned char data[BLE_DEVICE_RX_READ_LEN];
+    
+    static unsigned char buf[512];
+    static int len = 0;
+    int data_len;
+    
+    if (!error)
+    {
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@BLE_DEVICE_RX_UUID]])
+        {
+            data_len = characteristic.value.length;
+            [characteristic.value getBytes:data length:data_len];
+            
+            if (data_len == 20)
+            {
+                memcpy(&buf[len], data, 20);
+                len += data_len;
+                
+                if (len >= 64)
+                {
+                    [[self delegate] bleDidReceiveData:buf length:len];
+                    len = 0;
+                }
+            }
+            else if (data_len < 20)
+            {
+                memcpy(&buf[len], data, data_len);
+                len += data_len;
+                
+                [[self delegate] bleDidReceiveData:buf length:len];
+                len = 0;
+            }
+            
+            [self enableWrite];
+        }
+        else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@BLE_DEVICE_VENDOR_NAME_UUID]])
+        {
+            data_len = characteristic.value.length;
+            [characteristic.value getBytes:vendor_name length:data_len];
+            //            NSLog(@"Vendor: %s", vendor_name);
+        }
+        else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@BLE_DEVICE_LIB_VERSION_UUID]])
+        {
+            [characteristic.value getBytes:&libver length:2];
+            //            NSLog(@"Lib. ver.: %X", libver);
+        }
+    }
+    else
+    {
+        printf("updateValueForCharacteristic failed!");
+    }
+}
+
 @end

@@ -22,6 +22,4 @@
 - (void) startLookingForConnection;
 - (void) stopLookingForConnection; 
 
-- (void) turnLight:(NSInteger)light on:(BOOL)lightOn; 
-
 @end

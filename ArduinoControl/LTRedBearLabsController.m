@@ -61,49 +61,6 @@
     self.lookForConnection = NO; 
 }
 
-- (void) turnLight:(NSInteger)light on:(BOOL)lightOn {
-    UInt8 buf[2] = {0x01, 0x00};
-
-    buf[0] = (UInt8)light;
-
-    if (lightOn) //default is off
-        buf[1] = 0x01;
-
-    NSData *data = [[NSData alloc] initWithBytes:buf length:2];
-    [self writeToDevice:data];
-}
-
-- (void) writeToDevice:(NSData *)data {
-
-    CBUUID *serviceUUID = [CBUUID UUIDWithString:BLE_DEVICE_SERVICE_UUID];
-    CBService *service;
-
-    for (CBService *testService in self.activePeripheral.services) {
-        if ([testService.UUID isEqual:serviceUUID])
-            service = testService;
-    }
-    
-    if (!service) {
-        NSLog(@"WARNING: No service found");
-        return;
-    }
-
-    CBUUID *characteristicUUID = [CBUUID UUIDWithString:BLE_DEVICE_TX_UUID];
-    CBCharacteristic *characteristic;
-
-    for (CBCharacteristic *testCharacteristic in service.characteristics) {
-        if ([testCharacteristic.UUID isEqual:characteristicUUID])
-            characteristic = testCharacteristic; 
-    }
-
-    if (!characteristic) {
-        NSLog(@"WARNING: No characteristic found");
-        return;
-    }
-
-    [self.activePeripheral writeValue:data forCharacteristic:characteristic type:CBCharacteristicWriteWithoutResponse];
-}
-
 #pragma mark - CBCentralManagerDelegate Methods 
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
@@ -133,6 +90,14 @@
     self.activePeripheral = peripheral;
     [self.activePeripheral discoverServices:nil];
     self.bluetoothStatus = @"Connected peripheral";
+}
+
+- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    self.bluetoothStatus = @"Peripheral Disconnected";
+    if (self.activePeripheral == peripheral) {
+        self.activePeripheral = nil;
+        [self startLookingForConnection];
+    }
 }
 
 #pragma mark - CBPeripheralDelegate Methods
@@ -171,49 +136,20 @@
     return temp;
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
-{
-    unsigned char data[BLE_DEVICE_RX_READ_LEN];
-    
-    static unsigned char buf[512];
-    static int len = 0;
-    int data_len;
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     
     if (!error) {
-        data_len = characteristic.value.length;
-        [characteristic.value getBytes:data length:data_len];
-        
-        if (data_len == 20) {
-            memcpy(&buf[len], data, 20);
-            len += data_len;
-            
-            if (len >= 64) {
-                NSData *recData = [[NSData alloc] initWithBytes:data length:len];
-                NSLog(@"Long Bytes: %@", recData);
-                len = 0;
-            }
-        } else if (data_len < 20) {
-            memcpy(&buf[len], data, data_len);
-            len += data_len;
-
-            NSData *recData = [[NSData alloc] initWithBytes:data length:len];
-            NSLog(@"Bytes: %@", recData);
-            UInt16 buffer = 0;
-            [recData getBytes:&buffer range:NSMakeRange(1, 2)];
-            UInt16 val1 = [self swap:buffer];
-            NSLog(@"Val 1: %d", val1);
-            self.value1 = val1; 
-            [recData getBytes:&buffer range:NSMakeRange(4, 2)];
-            UInt16 val2 = [self swap:buffer];
-            NSLog(@"Val 2: %d", val2);
-            self.value2 = val2;
-            [recData getBytes:&buffer range:NSMakeRange(7, 2)];
-            UInt16 val3 = [self swap:buffer];
-            NSLog(@"Val 3: %d", val3);
-            self.value3 = val3;
-            
-            len = 0;
-        }
+        NSData *recData = characteristic.value;
+        UInt16 buffer = 0;
+        [recData getBytes:&buffer range:NSMakeRange(1, 2)];
+        UInt16 val1 = [self swap:buffer];
+        self.value1 = val1; 
+        [recData getBytes:&buffer range:NSMakeRange(4, 2)];
+        UInt16 val2 = [self swap:buffer];
+        self.value2 = val2;
+        [recData getBytes:&buffer range:NSMakeRange(7, 2)];
+        UInt16 val3 = [self swap:buffer];
+        self.value3 = val3;
 
         self.bluetoothStatus = @"Updated values";
 

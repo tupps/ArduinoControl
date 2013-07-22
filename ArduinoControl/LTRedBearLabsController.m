@@ -10,13 +10,17 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "CBPeripheral+IsEqual.h"
 
-#define BLE_DEVICE_SERVICE_UUID @"713D0000-503E-4C75-BA94-3148F18D941E"
-#define BLE_DEVICE_TX_UUID @"713D0003-503E-4C75-BA94-3148F18D941E"
+#define BLE_DEVICE_SERVICE_UUID     @"713D0000-503E-4C75-BA94-3148F18D941E"
+#define BLE_DEVICE_RX_UUID          @"713D0002-503E-4C75-BA94-3148F18D941E"
+#define BLE_DEVICE_TX_UUID          @"713D0003-503E-4C75-BA94-3148F18D941E"
+#define BLE_DEVICE_RESET_RX_UUID    @"713D0004-503E-4C75-BA94-3148F18D941E"
+#define BLE_DEVICE_RX_READ_LEN 20
 
 @interface LTRedBearLabsController () <CBCentralManagerDelegate, CBPeripheralDelegate>
 
 @property (strong, nonatomic) CBCentralManager *centralManager;
 @property (strong, nonatomic) CBPeripheral *activePeripheral;
+@property (strong, nonatomic) CBCharacteristic *resetCharacteristic;
 @property (assign, nonatomic) BOOL lookForConnection; 
 
 @end
@@ -133,11 +137,35 @@
 #pragma mark - CBPeripheralDelegate Methods
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
-    if (!error)
-        for (CBService *service in peripheral.services)
+    if (!error) {
+        for (CBService *service in peripheral.services) {
             [peripheral discoverCharacteristics:nil forService:service];
-    else
+        }
+    } else
         NSLog(@"Service discovery was unsuccessful!\n");
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+    
+    if (!error) {
+        CBUUID *deviceUUID = [CBUUID UUIDWithString:BLE_DEVICE_SERVICE_UUID];
+        for (CBCharacteristic *characteristic in service.characteristics) {
+            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+            if ([service.UUID isEqual:deviceUUID]) {
+                CBUUID *resetUUID = [CBUUID UUIDWithString:BLE_DEVICE_RESET_RX_UUID];
+                if ([characteristic.UUID isEqual:resetUUID]) {
+                    self.resetCharacteristic = characteristic;
+                }
+            }
+        }
+    } else
+        NSLog(@"Service discovery was unsuccessful!\n");
+}
+
+-(UInt16) swap:(UInt16)s {
+    UInt16 temp = s << 8;
+    temp |= (s >> 8);
+    return temp;
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
@@ -148,51 +176,49 @@
     static int len = 0;
     int data_len;
     
-    if (!error)
-    {
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@BLE_DEVICE_RX_UUID]])
-        {
-            data_len = characteristic.value.length;
-            [characteristic.value getBytes:data length:data_len];
+    if (!error) {
+        data_len = characteristic.value.length;
+        [characteristic.value getBytes:data length:data_len];
+        
+        if (data_len == 20) {
+            memcpy(&buf[len], data, 20);
+            len += data_len;
             
-            if (data_len == 20)
-            {
-                memcpy(&buf[len], data, 20);
-                len += data_len;
-                
-                if (len >= 64)
-                {
-                    [[self delegate] bleDidReceiveData:buf length:len];
-                    len = 0;
-                }
-            }
-            else if (data_len < 20)
-            {
-                memcpy(&buf[len], data, data_len);
-                len += data_len;
-                
-                [[self delegate] bleDidReceiveData:buf length:len];
+            if (len >= 64) {
+                NSData *recData = [[NSData alloc] initWithBytes:data length:len];
+                NSLog(@"Long Bytes: %@", recData);
                 len = 0;
             }
+        } else if (data_len < 20) {
+            memcpy(&buf[len], data, data_len);
+            len += data_len;
+
+            NSData *recData = [[NSData alloc] initWithBytes:data length:len];
+            NSLog(@"Bytes: %@", recData);
+            UInt16 buffer = 0;
+            [recData getBytes:&buffer range:NSMakeRange(1, 2)];
+            UInt16 val1 = [self swap:buffer];
+            NSLog(@"Val 1: %d", val1);
+            self.value1 = val1; 
+            [recData getBytes:&buffer range:NSMakeRange(4, 2)];
+            UInt16 val2 = [self swap:buffer];
+            NSLog(@"Val 2: %d", val2);
+            self.value2 = val2;
+            [recData getBytes:&buffer range:NSMakeRange(7, 2)];
+            UInt16 val3 = [self swap:buffer];
+            NSLog(@"Val 3: %d", val3);
+            self.value3 = val3;
             
-            [self enableWrite];
+            len = 0;
         }
-        else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@BLE_DEVICE_VENDOR_NAME_UUID]])
-        {
-            data_len = characteristic.value.length;
-            [characteristic.value getBytes:vendor_name length:data_len];
-            //            NSLog(@"Vendor: %s", vendor_name);
-        }
-        else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@BLE_DEVICE_LIB_VERSION_UUID]])
-        {
-            [characteristic.value getBytes:&libver length:2];
-            //            NSLog(@"Lib. ver.: %X", libver);
-        }
+
+    } else {
+        NSLog(@"Error reading data: %@", error);
     }
-    else
-    {
-        printf("updateValueForCharacteristic failed!");
-    }
+    
+    unsigned char bytes[] = {0x01};
+    NSData *singleByte = [[NSData alloc] initWithBytes:bytes length:1];
+    [peripheral writeValue:singleByte forCharacteristic:self.resetCharacteristic type:CBCharacteristicWriteWithoutResponse];
 }
 
 @end

@@ -19,23 +19,22 @@
     [super viewDidLoad];
 
     [[LTRedBearLabsController sharedLTRedBearLabsController] startLookingForConnection];
+
+    
+
 }
 
-- (IBAction) lightOneChanged:(UISwitch *)sender {
-    [[LTRedBearLabsController sharedLTRedBearLabsController] turnLight:1 on:sender.on];
+- (void) updateBackground {
+    CGFloat red = [LTRedBearLabsController sharedLTRedBearLabsController].value1 / 2048.0f;
+    CGFloat green = [LTRedBearLabsController sharedLTRedBearLabsController].value2 / 2048.0f;
+    CGFloat blue = [LTRedBearLabsController sharedLTRedBearLabsController].value3 / 2048.0f;
+    self.view.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
+    [self performSelector:@selector(updateBackground) withObject:nil afterDelay:0.10];
 }
 
-- (IBAction) lightTwoChanged:(UISwitch *)sender {
-    [[LTRedBearLabsController sharedLTRedBearLabsController] turnLight:2 on:sender.on];
-}
-
-- (IBAction) lightThreeChanged:(UISwitch *)sender {
-    [[LTRedBearLabsController sharedLTRedBearLabsController] turnLight:3 on:sender.on];
-}
 
 -(void) bleDidUpdateRSSI:(NSNumber *) rssi {
     NSLog(@"Did RSSI: %@", rssi);
 }
-
 
 @end

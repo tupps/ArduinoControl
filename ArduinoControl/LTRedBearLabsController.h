@@ -15,6 +15,10 @@
 
 + (LTRedBearLabsController *) sharedLTRedBearLabsController;
 
+@property (nonatomic, assign) NSInteger value1;
+@property (nonatomic, assign) NSInteger value2;
+@property (nonatomic, assign) NSInteger value3; 
+
 - (void) startLookingForConnection;
 - (void) stopLookingForConnection; 
 

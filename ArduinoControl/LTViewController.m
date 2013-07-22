@@ -8,8 +8,11 @@
 
 #import "LTViewController.h"
 #import "LTRedBearLabsController.h"
+#import <ReactiveCocoa/ReactiveCocoa.h>
 
 @interface LTViewController ()
+
+@property LTRedBearLabsController *bleController; 
 
 @end
 
@@ -20,21 +23,21 @@
 
     [[LTRedBearLabsController sharedLTRedBearLabsController] startLookingForConnection];
 
-    
+    self.bleController = [LTRedBearLabsController sharedLTRedBearLabsController];
 
-}
+    RACBind(self.connectionLabel.text) = RACBind(self.bleController.bluetoothStatus);
 
-- (void) updateBackground {
-    CGFloat red = [LTRedBearLabsController sharedLTRedBearLabsController].value1 / 2048.0f;
-    CGFloat green = [LTRedBearLabsController sharedLTRedBearLabsController].value2 / 2048.0f;
-    CGFloat blue = [LTRedBearLabsController sharedLTRedBearLabsController].value3 / 2048.0f;
-    self.view.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
-    [self performSelector:@selector(updateBackground) withObject:nil afterDelay:0.10];
-}
-
-
--(void) bleDidUpdateRSSI:(NSNumber *) rssi {
-    NSLog(@"Did RSSI: %@", rssi);
+    [[RACSignal
+      combineLatest:@[ RACAble(self.bleController.value1), RACAble(self.bleController.value2), RACAble(self.bleController.value3)]
+      reduce:^(NSNumber *value1, NSNumber *value2, NSNumber *value3) {
+          return [UIColor colorWithRed:value1.floatValue / 1024.0f
+                                 green:value2.floatValue / 1024.0f
+                                  blue:value3.floatValue / 1024.0f
+                                 alpha:1.0f];
+      }]
+     subscribeNext:^(UIColor *backgroundColor) {
+         self.view.backgroundColor = backgroundColor;
+     }];
 }
 
 @end

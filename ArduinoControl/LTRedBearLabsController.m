@@ -118,20 +118,21 @@
     }
 }
 
-- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-    NSLog(@"Discovered Peripheral: %@", peripheral);
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral     advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
 
     if (self.activePeripheral == nil || ! [self.activePeripheral isEqualToPeripheral:peripheral]) {
         //Connect to peripheral.
         self.activePeripheral = peripheral; 
         peripheral.delegate = self;
         [self.centralManager connectPeripheral:peripheral options:[NSDictionary dictionaryWithObject:@YES forKey:CBConnectPeripheralOptionNotifyOnDisconnectionKey]];
+        self.bluetoothStatus = @"Discovered peripheral";
     }
 }
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     self.activePeripheral = peripheral;
     [self.activePeripheral discoverServices:nil];
+    self.bluetoothStatus = @"Connected peripheral";
 }
 
 #pragma mark - CBPeripheralDelegate Methods
@@ -140,6 +141,7 @@
     if (!error) {
         for (CBService *service in peripheral.services) {
             [peripheral discoverCharacteristics:nil forService:service];
+            self.bluetoothStatus = @"Discovered services";
         }
     } else
         NSLog(@"Service discovery was unsuccessful!\n");
@@ -158,6 +160,7 @@
                 }
             }
         }
+        self.bluetoothStatus = @"Discovered characteristics";
     } else
         NSLog(@"Service discovery was unsuccessful!\n");
 }
@@ -211,6 +214,8 @@
             
             len = 0;
         }
+
+        self.bluetoothStatus = @"Updated values";
 
     } else {
         NSLog(@"Error reading data: %@", error);
